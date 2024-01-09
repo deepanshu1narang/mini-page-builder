@@ -1,0 +1,81 @@
+.PageBuilder {
+  display: flex;
+  height: calc(100vh - 6rem);
+  flex-direction: row-reverse;
+}
+
+.sidebar {
+  width: 200px;
+  background-color: #f0f0f0;
+  padding: 20px;
+  display: flex;
+  flex-direction: column;
+}
+
+.draggable-component {
+  margin-bottom: 10px;
+  padding: 10px;
+  border: 1px solid #ccc;
+  cursor: copy;
+}
+
+.page {
+  flex: 1;
+  padding: 20px;
+  border: 2px dashed #ccc;
+  position: relative;
+}
+
+.page-element {
+  position: absolute;
+  cursor: pointer;
+}
+
+.page-element.selected {
+  border: 1px solid red;
+}
+
+.modal {
+  position: fixed;
+  /* top: 50%; */
+  /* left: 50%; */
+  transform: translate(-50%, -50%);
+  padding: 20px;
+  background-color: #fff;
+  border: 1px solid #ccc;
+  /* height: 18rem; */
+  z-index: 99;
+  /* overflow-y: clip; */
+}
+
+.element-actions {
+  position: fixed;
+  top: 10px;
+  right: 10px;
+  display: flex;
+  flex-direction: column;
+}
+
+.element-actions button {
+  margin-bottom: 10px;
+}
+
+.modalOptions{
+  display: flex;
+  direction: column;
+}
+
+.textfield .MuiInputBase-input.MuiOutlinedInput-input{
+  /* text-align: center;  */
+  margin: 0; 
+  width: 10rem; 
+  background: #ffffff;
+  padding: 0.2rem 0.1rem 0.1rem 0.3rem;
+}
+
+.textfield .MuiInputBase-root.MuiOutlinedInput-root{
+  margin: 0; 
+  width: 10rem; 
+  background: #ffffff;
+  padding: 0.2rem 0.1rem 0.1rem 0.3rem;
+}
