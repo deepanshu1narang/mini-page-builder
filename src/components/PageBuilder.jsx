@@ -32,13 +32,14 @@ const PageBuilder = () => {
 
     const pageRef = useRef(null);
 
+    // when a new element is to be formed (ie to  be dragged from sidebar)
     const handleDragStart = (event, control) => {
-        console.log(control?.type + " drag started");
         setIsNew(true);
         setControlDragged(control);
         setSource("sidebar");
     };
 
+    // when an already existing element has to be repositioned (this code is for dragging)
     const changePosition = (event, component, index) => {
         setControlDragged(component);
         setSource("page");
@@ -48,27 +49,28 @@ const PageBuilder = () => {
         setSelectedComponent(comp);
     }
 
+    // when the element is dropped
     const handleDrop = (e) => {
         e.preventDefault();
         const { clientX, clientY } = e;
         const rect = pageRef.current.getBoundingClientRect();
         const newPosition = { x: clientX - rect.left, y: clientY - rect.top };
 
+        // if new element is taken from sidebar
         if (source === "sidebar") {
-
+            
             setModalConfig({ ...modalConfig, ...newPosition, type: controlDragged?.type, id: controlDragged?.type + "_" + Math.random() });
             setIsModalOpen(true);
         }
+        // if existing element is taken from page-area itself
         else if (source === "page") {
             let comps = [...components];
-            console.log(comps);
             comps.forEach((each, i) => {
                 if (each.id === controlDragged?.id) {
                     each.x = newPosition.x;
                     each.y = newPosition.y;
                 }
             })
-            console.log(comps);
             setComponents(comps);
             saveToLocalStorage(comps);
         }
@@ -105,6 +107,7 @@ const PageBuilder = () => {
         localStorage.setItem('pageBuilderComponents', JSON.stringify(data));
     };
 
+    // to remder the component based on control types
     function renderComponent(comp) {
         let element;
 
@@ -115,6 +118,8 @@ const PageBuilder = () => {
             element = <TextField
                 size='small'
                 className='textfield'
+                disabled={comp?.isDisabled}
+                placeholder={comp?.placeholder}
                 autoComplete='off'
                 InputProps={{
                     readOnly: true,
@@ -152,8 +157,11 @@ const PageBuilder = () => {
     };
 
     useEffect(() => {
+        // to fetch data out of local storage
         const savedComponents = JSON.parse(localStorage.getItem('pageBuilderComponents')) || [];
         setComponents(savedComponents);
+
+        // to unselect the slected component
         const onClickPage = () => setSelectedComponent(null);
         pageRef?.current?.addEventListener("click", onClickPage);
         () => pageRef?.current?.removeEventListener("click", onClickPage);
@@ -161,10 +169,13 @@ const PageBuilder = () => {
 
     return (
         <>
+        {/* Header component to render heading and Export Button. */}
         <Header setSnackbarMsg={setSnackbarMsg} snackbarMsg={snackbarMsg} />
         <Stack className='PageBuilder' direction="row-reverse" >
+        {/* sidebar: To drag the elements from here */}
             <Stack className='sidebar'>
                 {
+                    // draggableButtons have all the available elemnts 
                     draggableButtons?.map((control, index) => {
                         return (
                             <Stack
@@ -182,6 +193,7 @@ const PageBuilder = () => {
                     })
                 }
             </Stack>
+            {/* page area ... here user can model the page */}
             <Stack
                 className='page'
                 ref={pageRef}
@@ -204,11 +216,13 @@ const PageBuilder = () => {
                             onClick={(e) => handleElementClick(e, comp, index)}
                             style={{ top: comp.y, left: comp.x, position: 'absolute', display: "inline-block" }}
                         >
+                            {/* dependeing the type of control (element) component is rendered */}
                             { renderComponent(comp) }
                         </div>
                     ))
                 }
             </Stack>
+            {/* modal to configure the element */}
             {
                 isModalOpen && <DetailsModal
                     open={isModalOpen}
@@ -222,6 +236,7 @@ const PageBuilder = () => {
                     setSnackbarMsg={setSnackbarMsg}
                 />
             }
+            {/* message strips to show messages */}
             <SnackBarStrip snackbarMsg={snackbarMsg} setSnackbarMsg={setSnackbarMsg} />
         </Stack>
         </>

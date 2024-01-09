@@ -3,6 +3,7 @@ import Button from '@mui/material/Button';
 import Stack from "@mui/material/Stack";
 
 function Header(props) {
+    // this will log the JSON object (data of the page) in console and will show a message that data has been exported 
     const fnExport = () => { 
         let dataExp = localStorage.getItem('pageBuilderComponents');
         console.log(dataExp);

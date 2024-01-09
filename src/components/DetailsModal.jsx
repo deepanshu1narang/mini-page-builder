@@ -14,11 +14,17 @@ import "./PageBuilder.css";
 
 const DetailsModal = (props) => {
 
+    // if user is configuring elements... for eery element different options are required.. for this this is the function
     function renderModalComponent(control) {
 
         let element = "";
         if (control.type === "input") {
-            element = <></>
+            element = <>
+                <Stack>
+                    <Typography>Placeholder</Typography>
+                    <TextField className='textfield' value={props?.modalConfig?.placeholder ?? ""} multiline sx={{ padding: "0.1rem" }} onChange={e => handleModalConfigs(e, "placeholder", "value")} />
+                </Stack>
+            </>
         }
         else if (control.type === "label") {
             element = <>
@@ -72,6 +78,10 @@ const DetailsModal = (props) => {
         return element;
     }
 
+    // e -- event ... to take values and checked 
+    // property --- the target property to be changed
+    // type --- if it is a value or checkecd (for checkbox)
+    // toValidate --- for the fields which can take only numbers there is a validation... if they don't pass that character wouldn't be printed 
     const handleModalConfigs = (e, property, type, toValidate) => {
         if(!toValidate) toValidate = false;
         function isPositiveNumber(value) {
@@ -103,16 +113,18 @@ const DetailsModal = (props) => {
             <Stack justifyContent="space-between" className='modal'>
                 <h3 style={{ margin: 0 }}>{props?.control?.label}</h3>
                 <Stack gap={1} sx={{ height: "15rem", overflowY: "auto", margin: "0.7rem 0" }} >
+                    {/* this part of modal is rendered according to the element. ie options specific to elemnt... ex text is used for laebl but not for input and button*/}
                     {
                         renderModalComponent(props.control)
                     }
+                    {/* coordinates part is constant for all elements... coordinated can only be edited by moving */}
                     <Stack>
                         <Typography>X</Typography>
-                        <TextField className='textfield' value={props?.modalConfig?.x} onChange={e => handleModalConfigs(e, "x", "value", true)} />
+                        <TextField disabled className='textfield' value={props?.modalConfig?.x} onChange={e => handleModalConfigs(e, "x", "value", true)} />
                     </Stack>
                     <Stack>
                         <Typography>Y</Typography>
-                        <TextField className='textfield' value={props?.modalConfig?.y} onChange={e => handleModalConfigs(e, "y", "value", true)} />
+                        <TextField disabled className='textfield' value={props?.modalConfig?.y} onChange={e => handleModalConfigs(e, "y", "value", true)} />
                     </Stack>
                 </Stack>
                 <Stack direction="row" sx={{ marginTop: "0.5rem" }} >
