@@ -47,6 +47,7 @@ const PageBuilder = () => {
 
     const handleElementClick = (_, comp) => {
         setSelectedComponent(comp);
+        setControlDragged(comp);
     }
 
     // when the element is dropped
@@ -87,7 +88,7 @@ const PageBuilder = () => {
         let comps = [...components];
         comps = comps.filter(c => c.id !== comp.id);
         setComponents(comps);
-        saveToLocalStorage();
+        saveToLocalStorage(comps);
     }
     
     const handleKeyPresses = (e, comp, index) => {
@@ -134,8 +135,9 @@ const PageBuilder = () => {
     }
 
     const handleModalSave = () => {
+        let compsToSave = [];
         if (isNew) {
-            setComponents([...components, { ...modalConfig }]);
+            compsToSave = [...components, { ...modalConfig }];
         }
         else {
             let comps = [...components];
@@ -149,11 +151,12 @@ const PageBuilder = () => {
                     })
                 }
             });
-            setComponents(comps);
+            compsToSave = comps;
         }
+        setComponents(compsToSave);
         setIsModalOpen(false);
         setModalConfig({});
-        saveToLocalStorage();
+        saveToLocalStorage(compsToSave);
     };
 
     useEffect(() => {
@@ -170,8 +173,8 @@ const PageBuilder = () => {
     return (
         <>
         {/* Header component to render heading and Export Button. */}
-        <Header setSnackbarMsg={setSnackbarMsg} snackbarMsg={snackbarMsg} />
-        <Stack className='PageBuilder' direction="row-reverse" >
+        <Header setSnackbarMsg={setSnackbarMsg} snackbarMsg={snackbarMsg} setComponents={setComponents} />
+        <Stack className='PageBuilder' direction="row-reverse" justifyContent="space-between" >
         {/* sidebar: To drag the elements from here */}
             <Stack className='sidebar'>
                 {
@@ -194,8 +197,7 @@ const PageBuilder = () => {
                 }
             </Stack>
             {/* page area ... here user can model the page */}
-            <Stack
-                className='page'
+            <Stack className='page'
                 ref={pageRef}
                 onDragOver={(event) => event.preventDefault()}
                 onDrop={handleDrop}
@@ -214,7 +216,8 @@ const PageBuilder = () => {
                             tabIndex={index}
 
                             onClick={(e) => handleElementClick(e, comp, index)}
-                            style={{ top: comp.y, left: comp.x, position: 'absolute', display: "inline-block" }}
+                            // style={{ top: comp.y, left: comp.x, position: 'absolute', display: "inline-block" }}
+                            style={{ top: `${comp.y/16}rem`, left: `${comp.x/16}rem`, position: 'absolute' }}
                         >
                             {/* dependeing the type of control (element) component is rendered */}
                             { renderComponent(comp) }
