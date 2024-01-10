@@ -47,7 +47,7 @@ const PageBuilder = () => {
 
     const handleElementClick = (_, comp) => {
         setSelectedComponent(comp);
-        setControlDragged(comp);
+        setControlDragged(comp)
     }
 
     // when the element is dropped
@@ -208,7 +208,7 @@ const PageBuilder = () => {
                             key={index}
                             draggable
                             onDragStart={e => changePosition(e, comp, index)}
-                            className={`page-element ${selectedComponent?.id === comp?.id ? 'selected' : ''}`}
+                            className={`page-element ${selectedComponent?.id === comp?.id ? 'selected' : ''} `}
                             role="button"
 
 
